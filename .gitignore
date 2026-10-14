@@ -1,0 +1,6 @@
+# private face data, models, generated records
+data/
+database/
+reports/
+docs/evidence/
+__pycache__/

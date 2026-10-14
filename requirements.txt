@@ -1,0 +1,4 @@
+# Python 3.14.3 tested
+opencv-python==5.0.0.93
+numpy==2.4.4
+scikit-learn==1.9.0
