@@ -27,7 +27,7 @@ class Track:
 
 
 def nearest(tracks, c, max_dist):
-    # ponytail: nearest-centre tracking, fine for a few faces; swap for SORT/IoU tracker in a real classroom
+    # note: nearest-centre tracking, fine for a few faces; swap for SORT/IoU tracker in a real classroom
     d = lambda t: ((t.c[0] - c[0]) ** 2 + (t.c[1] - c[1]) ** 2) ** 0.5
     best = min(tracks, key=d, default=None)
     return best if best and d(best) < max_dist else None
@@ -39,6 +39,8 @@ def main():
     gallery, names = vision.load_gallery(), database.student_names(db)
     print(f"loaded {len(gallery)} enrolled students: {', '.join(names.get(s, s) for s in gallery) or 'none'}")
     print(f"liveness mode: {config.LIVENESS_MODE}")
+    if not gallery:
+        print("WARNING: no students enrolled; every face will be unrecognised. Run: python enroll.py --id S01 --name <name>")
     session, tracks = None, []
     cap = cv2.VideoCapture(config.CAMERA_INDEX, cv2.CAP_DSHOW)
     if not cap.isOpened():
@@ -69,7 +71,10 @@ def main():
                     sid, sim = vision.match(rec.embed(frame, f), gallery)
                     t.hits = t.hits + 1 if sid == t.last_id else 1
                     t.last_id = sid
-                    if sid is None:
+                    if not gallery:
+                        color, label = RED, "NO STUDENTS ENROLLED - run enroll.py"
+                        t.result = ""
+                    elif sid is None:
                         color, label = RED, f"UNKNOWN (best cos sim {sim:.2f})"
                         t.result = ""
                     else:

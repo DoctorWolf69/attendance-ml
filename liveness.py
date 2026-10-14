@@ -42,6 +42,6 @@ class HeadTurnChallenge:
         if time.time() - self.start > config.LIVENESS_TIMEOUT_S:
             self.reset()
             return "LIVENESS FAILED - retry", False
-        # ponytail: direction-agnostic prompt, so mirrored/unmirrored previews don't matter
+        # note: direction-agnostic prompt, so mirrored/unmirrored previews don't matter
         done = int(self.saw_left) + int(self.saw_right)
         return f"CHECKING LIVENESS: turn head side to side ({done}/2)", False
